@@ -20,7 +20,7 @@ def generate_launch_description():
     tf_prefix    = LaunchConfiguration('tf_prefix',     default = 'oak')
 
     lrcheck        = LaunchConfiguration('lrcheck', default = True)
-    extended       = LaunchConfiguration('extended', default = False)
+    extended       = LaunchConfiguration('extended', default = True)
     subpixel       = LaunchConfiguration('subpixel', default = True)
     resourceBaseFolder      = LaunchConfiguration('resourceBaseFolder', default = default_resources_path)
 

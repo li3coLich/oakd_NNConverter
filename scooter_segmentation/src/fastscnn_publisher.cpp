@@ -61,16 +61,16 @@ std::tuple<dai::Pipeline, int, int> createPipeline( bool lrcheck,
     dai::node::MonoCamera::Properties::SensorResolution monoResolution;
     int stereoWidth, stereoHeight, rgbWidth, rgbHeight;
 
-    monoLeft->setResolution(dai::MonoCameraProperties::SensorResolution::THE_400_P);
+    monoLeft->setResolution(dai::MonoCameraProperties::SensorResolution::THE_720_P);
     monoLeft->setBoardSocket(dai::CameraBoardSocket::CAM_B);
     monoLeft->setFps(stereo_fps);
 
-    monoRight->setResolution(dai::MonoCameraProperties::SensorResolution::THE_400_P);
+    monoRight->setResolution(dai::MonoCameraProperties::SensorResolution::THE_720_P);
     monoRight->setBoardSocket(dai::CameraBoardSocket::CAM_C);
     monoRight->setFps(stereo_fps);
 
     stereoWidth = 640;
-    stereoHeight = 400;
+    stereoHeight = 360;
 
     stereo->initialConfig.setConfidenceThreshold(confidence);
     stereo->setRectifyEdgeFillColor(0);  // black, to better see the cutout
@@ -78,6 +78,8 @@ std::tuple<dai::Pipeline, int, int> createPipeline( bool lrcheck,
     stereo->setLeftRightCheck(lrcheck);
     stereo->setExtendedDisparity(extended);
     stereo->setSubpixel(subpixel);
+
+    stereo->setOutputSize(stereoWidth, stereoHeight);
     
     // stereo->setDepthAlign(dai::CameraBoardSocket::CAM_A);
     
@@ -219,8 +221,12 @@ int main(int argc, char** argv) {
     dai::rosBridge::ImageConverter rgbConverter(tfPrefix + "_rgb_camera_optical_frame", false);
     rgbConverter.setUpdateRosBaseTimeOnToRosMsg();
 
-    auto depthCameraInfo = rgbConverter.calibrationToCameraInfo(calibrationHandler, dai::CameraBoardSocket::CAM_A, width, height);
-    auto depthconverter = rgbConverter;
+    dai::rosBridge::ImageConverter rightconverter(tfPrefix + "_right_camera_optical_frame", true);
+    rightconverter.setUpdateRosBaseTimeOnToRosMsg();
+    auto rightCameraInfo = converter.calibrationToCameraInfo(calibrationHandler, dai::CameraBoardSocket::CAM_C, monoWidth, monoHeight);
+
+    auto depthCameraInfo = rightCameraInfo;
+    auto depthconverter = rightconverter;
     dai::rosBridge::BridgePublisher<sensor_msgs::msg::Image, dai::ImgFrame> depthPublish(
         stereoQueue,
         node,
