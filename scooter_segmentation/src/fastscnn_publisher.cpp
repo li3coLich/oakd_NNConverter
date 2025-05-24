@@ -45,16 +45,16 @@ std::tuple<dai::Pipeline, int, int> createPipeline( bool lrcheck,
 
     pipeline.setOpenVINOVersion(dai::OpenVINO::Version::VERSION_2022_1);
 
-    auto controlIn = pipeline.create<dai::node::XLinkIn>();
+    // auto controlIn = pipeline.create<dai::node::XLinkIn>();
     auto monoLeft = pipeline.create<dai::node::MonoCamera>();
     auto monoRight = pipeline.create<dai::node::MonoCamera>();
     auto stereo = pipeline.create<dai::node::StereoDepth>();
     auto xoutDepth = pipeline.create<dai::node::XLinkOut>();
 
 
-    controlIn->setStreamName("control");
-    controlIn->out.link(monoRight->inputControl);
-    controlIn->out.link(monoLeft->inputControl);
+    // controlIn->setStreamName("control");
+    // controlIn->out.link(monoRight->inputControl);
+    // controlIn->out.link(monoLeft->inputControl);
 
     xoutDepth->setStreamName("depth");
 
@@ -205,11 +205,11 @@ int main(int argc, char** argv) {
         throw std::runtime_error("\" DepthAI Device with MxId  \"" + mxId + "\" not found.  \"");
     }
 
-    auto controlQueue = device->getInputQueue("control");
+    // auto controlQueue = device->getInputQueue("control");
     // Set manual exposure
-    dai::CameraControl ctrl;
-    ctrl.setManualExposure(20000, 800);
-    controlQueue->send(ctrl);
+    // dai::CameraControl ctrl;
+    // ctrl.setManualExposure(20000, 800);
+    // controlQueue->send(ctrl);
 
     std::shared_ptr<dai::DataOutputQueue> stereoQueue;
     stereoQueue = device->getOutputQueue("depth", 15, false);
