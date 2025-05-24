@@ -70,7 +70,7 @@ std::tuple<dai::Pipeline, int, int> createPipeline( bool lrcheck,
     monoRight->setFps(stereo_fps);
 
     stereoWidth = 640;
-    stereoHeight = 360;
+    stereoHeight = 400;
 
     stereo->initialConfig.setConfidenceThreshold(confidence);
     stereo->setRectifyEdgeFillColor(0);  // black, to better see the cutout
@@ -78,8 +78,6 @@ std::tuple<dai::Pipeline, int, int> createPipeline( bool lrcheck,
     stereo->setLeftRightCheck(lrcheck);
     stereo->setExtendedDisparity(extended);
     stereo->setSubpixel(subpixel);
-
-    // stereo->setOutputSize(stereoWidth, stereoHeight);
     
     // stereo->setDepthAlign(dai::CameraBoardSocket::CAM_A);
     
@@ -221,12 +219,8 @@ int main(int argc, char** argv) {
     dai::rosBridge::ImageConverter rgbConverter(tfPrefix + "_rgb_camera_optical_frame", false);
     rgbConverter.setUpdateRosBaseTimeOnToRosMsg();
 
-    dai::rosBridge::ImageConverter rightconverter(tfPrefix + "_right_camera_optical_frame", true);
-    rightconverter.setUpdateRosBaseTimeOnToRosMsg();
-    auto rightCameraInfo = converter.calibrationToCameraInfo(calibrationHandler, dai::CameraBoardSocket::CAM_C, monoWidth, monoHeight);
-
-    auto depthCameraInfo = rightCameraInfo;
-    auto depthconverter = rightconverter;
+    auto depthCameraInfo = rgbConverter.calibrationToCameraInfo(calibrationHandler, dai::CameraBoardSocket::CAM_A, 1280, 720);
+    auto depthconverter = rgbConverter;
     dai::rosBridge::BridgePublisher<sensor_msgs::msg::Image, dai::ImgFrame> depthPublish(
         stereoQueue,
         node,
