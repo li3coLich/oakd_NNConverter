@@ -79,7 +79,7 @@ std::tuple<dai::Pipeline, int, int> createPipeline( bool lrcheck,
     stereo->setExtendedDisparity(extended);
     stereo->setSubpixel(subpixel);
 
-    stereo->setOutputSize(stereoWidth, stereoHeight);
+    // stereo->setOutputSize(stereoWidth, stereoHeight);
     
     // stereo->setDepthAlign(dai::CameraBoardSocket::CAM_A);
     
